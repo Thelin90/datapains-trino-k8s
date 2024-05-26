@@ -1,0 +1,34 @@
+apiVersion: v1
+data:
+  #### ~~~~~ ####
+  #     AWS     #
+  #### ~~~~~ ####
+  AWS_ACCESS_KEY: minio
+  AWS_SECRET_ACCESS_KEY: minio123
+  S3_BUCKET: lakehouse
+  HIVE_S3_BUCKET: lakehouse/db
+
+  #### ~~~~~ ####
+  #     Hive    #
+  #### ~~~~~ ####
+  HIVE_SSL_ENABLED: "false"
+  HIVE_USE_INSTANCE_CREDENTIALS: "false"
+  HIVE_HOST: "hive-service"
+  HIVE_PORT: "9083"
+  HIVE_METASTORE_SERVER_MIN_THREADS: "1"
+  HIVE_METASTORE_SERVER_MAX_THREADS: "100"
+
+  ####
+  # Hive Back-End Postgres
+  ####
+  POSTGRES_DB: "hivemetastore"
+  POSTGRES_USER: "metastore"
+  POSTGRES_PASSWORD: "password"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+
+kind: ConfigMap
+metadata:
+  labels:
+    service: metastore-env
+  name: metastore-env

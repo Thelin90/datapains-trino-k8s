@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: minio
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        args: [
+            "server",
+            "--address",
+            ":9000",
+            "--console-address",
+            ":9001",
+            "/storage",
+        ]
+        image: minio/minio:RELEASE.2024-05-10T01-41-38Z
+        imagePullPolicy: Always
+        env:
+          - name: MINIO_ROOT_USER
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_ACCESS_KEY
+          - name: MINIO_ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_SECRET_ACCESS_KEY
+        ports:
+          - containerPort: 9000
+          - containerPort: 9001
+        resources:
+          limits:
+            memory: 500Mi
+          requests:
+            memory: 100Mi
+            cpu: "0.01"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-client-job
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      initContainers:
+        - name: init-sleep
+          image: busybox
+          command: [ "sh", "-c", "sleep 15" ]
+      containers:
+      - name: minio-client-job
+        imagePullPolicy: Always
+        image: minio/mc:RELEASE.2024-05-09T17-04-24Z
+        command:
+          - sh
+          - -c
+          - mc config host add minio http://minio-service:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD && mc mb minio/lakehouse --region=us-west-1
+        env:
+          - name: MINIO_ROOT_USER
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_ACCESS_KEY
+          - name: MINIO_ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_SECRET_ACCESS_KEY
+        resources:
+          limits:
+            memory: 30Mi
+          requests:
+            memory: 10Mi
+            cpu: "0.001"
+      restartPolicy: Never
+  backoffLimit: 4
+---

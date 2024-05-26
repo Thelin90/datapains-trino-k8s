@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-metastore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hive-metastore
+  template:
+    metadata:
+      labels:
+        app: hive-metastore
+    spec:
+      initContainers:
+      - name: init-sleep
+        image: busybox
+        command: ["sh", "-c", "sleep 30"]
+      containers:
+      - name: hive-metastore
+        image: datapains/metastore:0.0.1
+        imagePullPolicy: Never
+        env:
+          - name: AWS_ACCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_ACCESS_KEY
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: AWS_SECRET_ACCESS_KEY
+          - name: S3_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_S3_BUCKET
+          - name: HIVE_SSL_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_SSL_ENABLED
+          - name: HIVE_USE_INSTANCE_CREDENTIALS
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_USE_INSTANCE_CREDENTIALS
+          - name: HIVE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_HOST
+          - name: HIVE_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_PORT
+          - name: HIVE_METASTORE_SERVER_MAX_THREADS
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_METASTORE_SERVER_MAX_THREADS
+          - name: HIVE_METASTORE_SERVER_MIN_THREADS
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: HIVE_METASTORE_SERVER_MIN_THREADS
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: POSTGRES_USER
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: POSTGRES_HOST
+          - name: POSTGRES_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: POSTGRES_PORT
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: POSTGRES_DB
+        ports:
+          - containerPort: 8080
+          - containerPort: 8889
+        resources:
+          limits:
+            memory: 1000Mi
+          requests:
+            memory: 100Mi
+            cpu: "0.5"
+      restartPolicy: Always
