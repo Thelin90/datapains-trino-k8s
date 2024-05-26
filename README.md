@@ -6,7 +6,8 @@
 
 ## MinIO With Metastore
 
-In this workshop I provide to you a setup for a Min
+In this workshop I provide to you a setup for a MinIO with a Metastore (utilising postgres internally)
+to successfully query delta tables via trino.
 
 ### Docker
 
