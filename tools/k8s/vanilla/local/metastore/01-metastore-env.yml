@@ -1,12 +1,18 @@
+---
 apiVersion: v1
 data:
   #### ~~~~~ ####
+  #     K8S     #
+  #### ~~~~~ ####
+  K8S_NAMESPACE: "metastore"
+
+  #### ~~~~~ ####
   #     AWS     #
   #### ~~~~~ ####
-  AWS_ACCESS_KEY: minio
-  AWS_SECRET_ACCESS_KEY: minio123
-  S3_BUCKET: lakehouse
-  HIVE_S3_BUCKET: lakehouse/db
+  AWS_ACCESS_KEY: "minio"
+  AWS_SECRET_ACCESS_KEY: "minio123"
+  S3_BUCKET: "lakehouse"
+  HIVE_S3_BUCKET: "lakehouse/db"
 
   #### ~~~~~ ####
   #     Hive    #
@@ -32,3 +38,5 @@ metadata:
   labels:
     service: metastore-env
   name: metastore-env
+  namespace: metastore
+---

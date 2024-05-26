@@ -1,5 +1,7 @@
 # DataPains Trino Kubernetes
 
+# Pre Requisites
+
 # Setup
 
 ## MinIO With Metastore
@@ -20,9 +22,26 @@ Otherwise
 make build-image COMPONENT=metastore CONTEXT="tools/docker"
 ```
 
-### Helm
+### Vanilla - Local
+
+```bash
+make deploy-local-metastore
+```
+
+To delete
+
+```bash
+make delete-local-metastore
+```
 
 ## Trino
 
 ### Helm
+
+First add the trino helm repo!
+
+```bash
+helm repo add trino https://trinodb.github.io/charts
+```
+
 
