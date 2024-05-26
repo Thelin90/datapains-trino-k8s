@@ -80,6 +80,11 @@ spec:
               configMapKeyRef:
                 name: metastore-env
                 key: AWS_SECRET_ACCESS_KEY
+          - name: K8S_NAMESPACE
+            valueFrom:
+              configMapKeyRef:
+                name: metastore-env
+                key: K8S_NAMESPACE
         resources:
           limits:
             memory: 30Mi

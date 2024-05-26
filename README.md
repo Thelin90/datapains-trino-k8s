@@ -1,5 +1,7 @@
 # DataPains Trino Kubernetes
 
+[Medium Article For Reference]()
+
 # Pre Requisites
 
 # Setup
@@ -23,16 +25,16 @@ Otherwise
 make build-image COMPONENT=metastore CONTEXT="tools/docker"
 ```
 
-### Vanilla - Local
+### Metastore - Vanilla - Local
 
 ```bash
-make deploy-local-metastore
+make deploy-local-metastore ENV=local
 ```
 
 To delete
 
 ```bash
-make delete-local-metastore
+make delete-local-metastore ENV=local
 ```
 
 ## Trino
