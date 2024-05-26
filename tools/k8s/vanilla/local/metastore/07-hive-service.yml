@@ -11,6 +11,10 @@ spec:
       port: 9083
       targetPort: 9083
       nodePort: 30083
+    - name: "10000"
+      port: 10000
+      targetPort: 10000
+      nodePort: 30011
   selector:
-    app: hive
+    app: hive-metastore
 ---

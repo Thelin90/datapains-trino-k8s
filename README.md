@@ -76,10 +76,18 @@ We use default values for the deployment, but please note section:
 ```yaml
 additionalCatalogs:
   lakehouse: |-
-    connector.name=delta-lake
+    connector.name=delta_lake
     hive.metastore.uri=thrift://hive-service.metastore:9083
-    hive.s3.aws-secret-key=minio
-    hive.s3.aws-access-key=minio123
+    hive.s3.endpoint=http://minio-service.metastore:9000
+    hive.s3.path-style-access=true
+    hive.s3.aws-access-key=minio
+    hive.s3.aws-secret-key=minio123
+    delta.enable-non-concurrent-writes=true
+  rdbms: |-
+    connector.name=postgresql
+    connection-url=jdbc:postgresql://postgres-service.metastore:5432/hivemetastore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC
+    connection-user=metastore
+    connection-password=password
 ```
 
 This will ensure we can query our tables from our metastore.
@@ -91,7 +99,7 @@ make deploy-local-trino NAMESPACE=trino
 And to delete
 
 ```bash
-make delete-local-trino
+make delete-local-trino NAMESPACE=trino
 ```
 
 #### Setup Delta Table And Query!
@@ -125,11 +133,15 @@ Splits: 20 total, 20 done (100.00%)
 ```
 
 ```bash
-trino> CREATE TABLE lakehouse.default.products (name VARCHAR, price DOUBLE, product_no BIGINT, ts TIMESTAMP WITH TIME ZONE);
+trino> CREATE SCHEMA lakehouse.bronze;
 ```
 
 ```bash
-SELECT * FROM lakehouse.default.products;
-INSERT INTO lakehouse.default.products VALUES ('Apple', 889, 12345, 1654523786273, CURRENT_TIMESTAMP);
-SELECT * FROM lakehouse.default.products;
+trino> CREATE TABLE lakehouse.bronze.products ( name VARCHAR, price DOUBLE, product_no BIGINT, ingest_date DATE, created TIMESTAMP WITH TIME ZONE);
+```
+
+```bash
+trino> SELECT * FROM lakehouse.bronze.products;
+trino> INSERT INTO lakehouse.bronze.products VALUES ('Apple', 889, 12345, 1654523786273, CURRENT_DATE; CURRENT_TIMESTAMP);
+trino> SELECT * FROM lakehouse.bronze.products;
 ```

@@ -204,10 +204,18 @@ eventListenerProperties: {}
 
 additionalCatalogs:
   lakehouse: |-
-    connector.name=delta-lake
+    connector.name=delta_lake
     hive.metastore.uri=thrift://hive-service.metastore:9083
-    hive.s3.aws-secret-key=minio
-    hive.s3.aws-access-key=minio123
+    hive.s3.endpoint=http://minio-service.metastore:9000
+    hive.s3.path-style-access=true
+    hive.s3.aws-access-key=minio
+    hive.s3.aws-secret-key=minio123
+    delta.enable-non-concurrent-writes=true
+  rdbms: |-
+    connector.name=postgresql
+    connection-url=jdbc:postgresql://postgres-service.metastore:5432/hivemetastore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC
+    connection-user=metastore
+    connection-password=password
 
 env: []
 # env -- additional environment variables added to every pod, specified as a list with explicit values
@@ -284,7 +292,6 @@ shareProcessNamespace:
 service:
   type: NodePort
   port: 8080
-  targetPort: 30036
 
 auth: {}
 # auth -- Available authentication methods.
