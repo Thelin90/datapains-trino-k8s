@@ -5,6 +5,7 @@ export K8S_VANILLA_PATH := tools/k8s/vanilla
 export ENV := local
 export NAMESPACE := metastore
 export DOCKER_BUILD := build
+export LOCAL_TRINO_VALUES := tools/k8s/helm/trino/local
 
 .PHONY: build-image
 build-image:
@@ -21,3 +22,16 @@ delete-local-metastore:
 .PHONY: inspect-local-metastore
 inspect-local-metastore:
 	kubectl get pods -n $(NAMESPACE)
+
+.PHONY: log-pod
+log-pod:
+	kubectl logs $(COMPONENT) -n $(NAMESPACE) $(TAIL)
+
+.PHONY: deploy-local-trino
+deploy-local-trino:
+	kubectl create namespace $(NAMESPACE)
+	helm install -f $(LOCAL_TRINO_VALUES)/values.yaml datapains-trino-cluster trino/trino --namespace $(NAMESPACE)
+
+.PHONY: delete-local-trino
+delete-local-trino:
+	helm uninstall datapains-trino-cluster --namespace $(NAMESPACE)

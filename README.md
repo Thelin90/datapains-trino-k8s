@@ -57,4 +57,25 @@ First add the trino helm repo!
 helm repo add trino https://trinodb.github.io/charts
 ```
 
+#### values.yaml
 
+We use default values for the deployment, but please note section:
+
+```yaml
+additionalCatalogs:
+  lakehouse: |-
+    connector.name=delta
+    hive.metastore.uri=thrift://hive-service.metastore:9083
+```
+
+This will ensure we can query our tables from our metastore.
+
+```bash
+make deploy-local-trino NAMESPACE=trino
+```
+
+And to delete
+
+```bash
+make delete-local-trino
+```
