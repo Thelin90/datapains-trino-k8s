@@ -37,6 +37,16 @@ To delete
 make delete-local-metastore ENV=local
 ```
 
+#### Statefulset
+
+For `Hive`, `Postgres`, `MinIO` we choose to use `StatefulSet` as the deployment type over `Deployment`.
+
+A StatefulSet should be chosen for stateful components that require predictable Pod identities,
+ordered rollouts, and stable storage access.
+
+Deployment should be chosen instead when your service is stateless,
+doesn't require persistent storage, and won't be affected by changes to Pod identities.
+
 ## Trino
 
 ### Helm

@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: hive-metastore
   namespace: metastore
 spec:
+  serviceName: hive-metastore
   replicas: 1
   selector:
     matchLabels:
@@ -102,3 +103,11 @@ spec:
             memory: 100Mi
             cpu: "0.5"
       restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: hive-metastore-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1000Mi

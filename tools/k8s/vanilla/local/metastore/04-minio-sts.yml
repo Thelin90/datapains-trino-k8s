@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: minio
   name: minio
   namespace: metastore
 spec:
+  serviceName: minio
   replicas: 1
   selector:
     matchLabels:
@@ -47,6 +48,15 @@ spec:
           requests:
             memory: 100Mi
             cpu: "0.01"
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: minio-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1000Mi
 ---
 apiVersion: batch/v1
 kind: Job

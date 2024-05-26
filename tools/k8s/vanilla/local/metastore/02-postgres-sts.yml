@@ -1,10 +1,10 @@
----
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
   namespace: metastore
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -50,16 +50,12 @@ spec:
         - name: postgres-volume
           persistentVolumeClaim:
             claimName: postgres-volume
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-volume
-  namespace: metastore
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1000Mi
----
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-volume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1000Mi
