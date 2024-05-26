@@ -208,8 +208,6 @@ additionalCatalogs:
     hive.metastore.uri=thrift://hive-service.metastore:9083
     hive.s3.aws-secret-key=minio
     hive.s3.aws-access-key=minio123
-    parquet.optimized-writer.enabled=true
-    delta.enable-non-concurrent-writes=true
 
 env: []
 # env -- additional environment variables added to every pod, specified as a list with explicit values

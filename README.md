@@ -57,6 +57,18 @@ First add the trino helm repo!
 helm repo add trino https://trinodb.github.io/charts
 ```
 
+Make sure you use version >= `0.21.0`
+```bash
+helm search repo trino
+```
+
+Should give:
+
+```bash
+NAME       	CHART VERSION	APP VERSION	DESCRIPTION
+trino/trino	0.21.0       	448        	Fast distributed SQL query engine for big data ...
+```
+
 #### values.yaml
 
 We use default values for the deployment, but please note section:
@@ -64,8 +76,10 @@ We use default values for the deployment, but please note section:
 ```yaml
 additionalCatalogs:
   lakehouse: |-
-    connector.name=delta
+    connector.name=delta-lake
     hive.metastore.uri=thrift://hive-service.metastore:9083
+    hive.s3.aws-secret-key=minio
+    hive.s3.aws-access-key=minio123
 ```
 
 This will ensure we can query our tables from our metastore.
@@ -78,4 +92,44 @@ And to delete
 
 ```bash
 make delete-local-trino
+```
+
+#### Setup Delta Table And Query!
+
+The trino cluster is now up and running!
+
+We will have to execute ourselves into the `coordinator` and create a table.
+
+```bash
+kubectl get pods -n trino
+```
+
+```bash
+kubectl exec -it datapains-trino-cluster-coordinator-747bc6ccff-b6tx2 -n trino -- /bin/bash
+```
+
+```bash
+[trino@datapains-trino-cluster-coordinator-747bc6ccff-b6tx2 /]$ trino
+trino> SHOW CATALOGS;
+  Catalog
+-----------
+ lakehouse
+ system
+ tpcds
+ tpch
+(4 rows)
+
+Query 20240526_120408_00000_kyyrh, FINISHED, 2 nodes
+Splits: 20 total, 20 done (100.00%)
+2.57 [0 rows, 0B] [0 rows/s, 0B/s]
+```
+
+```bash
+trino> CREATE TABLE lakehouse.default.products (name VARCHAR, price DOUBLE, product_no BIGINT, ts TIMESTAMP WITH TIME ZONE);
+```
+
+```bash
+SELECT * FROM lakehouse.default.products;
+INSERT INTO lakehouse.default.products VALUES ('Apple', 889, 12345, 1654523786273, CURRENT_TIMESTAMP);
+SELECT * FROM lakehouse.default.products;
 ```

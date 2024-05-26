@@ -96,6 +96,7 @@ spec:
         ports:
           - containerPort: 8080
           - containerPort: 8889
+          - containerPort: 9083
         resources:
           limits:
             memory: 1000Mi

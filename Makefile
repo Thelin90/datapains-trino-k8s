@@ -29,7 +29,7 @@ log-pod:
 
 .PHONY: deploy-local-trino
 deploy-local-trino:
-	kubectl create namespace $(NAMESPACE)
+	kubectl create namespace $(NAMESPACE) || true
 	helm install -f $(LOCAL_TRINO_VALUES)/values.yaml datapains-trino-cluster trino/trino --namespace $(NAMESPACE)
 
 .PHONY: delete-local-trino
