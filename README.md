@@ -1,6 +1,6 @@
 # DataPains Trino Kubernetes
 
-[Medium Article For Reference]()
+[Medium Article For Reference](https://medium.com/@simon.thelin90/trino-minio-metastore-workshop-kubernetes-dbede7b1eca1)
 
 # Pre Requisites
 
@@ -142,6 +142,6 @@ trino> CREATE TABLE lakehouse.bronze.products ( name VARCHAR, price DOUBLE, prod
 
 ```bash
 trino> SELECT * FROM lakehouse.bronze.products;
-trino> INSERT INTO lakehouse.bronze.products VALUES ('Apple', 889, 12345, 1654523786273, CURRENT_DATE; CURRENT_TIMESTAMP);
+INSERT INTO lakehouse.bronze.products VALUES (CAST('Apple' AS VARCHAR), CAST(889.0 AS DOUBLE), CAST(1654523786273 AS BIGINT), CURRENT_DATE, CURRENT_TIMESTAMP);
 trino> SELECT * FROM lakehouse.bronze.products;
 ```
