@@ -63,6 +63,9 @@ kind: Job
 metadata:
   name: minio-client-job
   namespace: metastore
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   ttlSecondsAfterFinished: 60
   template:
