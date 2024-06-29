@@ -4,6 +4,9 @@
 
 # Pre Requisites
 
+* Docker Desktop (with k8s enabled)
+* make
+
 # Setup
 
 ## MinIO With Metastore
