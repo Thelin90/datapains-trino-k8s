@@ -1,6 +1,11 @@
 # DataPains Trino Kubernetes
 
-[Medium Article For Reference](https://medium.com/@simon.thelin90/trino-minio-metastore-workshop-kubernetes-dbede7b1eca1)
+[Medium Article For Reference](https://medium.com/@simon.thelin90/trino-minio-metastore-workshop-kubernetes-dbede7b1eca1)<
+
+# NOTE
+
+* Old `lakehouse` catalog is now `delta`
+* And `iceberg` also exists with this deployment.
 
 # Pre Requisites
 
@@ -78,7 +83,16 @@ We use default values for the deployment, but please note section:
 
 ```yaml
 additionalCatalogs:
-  lakehouse: |-
+  iceberg: |-
+    connector.name=iceberg
+    hive.metastore.uri=thrift://hive-service.metastore:9083
+    hive.s3.endpoint=http://minio-service.metastore:9000
+    hive.s3.path-style-access=true
+    hive.s3.aws-access-key=minio
+    hive.s3.aws-secret-key=minio123
+    iceberg.file-format=parquet
+
+  delta: |-
     connector.name=delta_lake
     hive.metastore.uri=thrift://hive-service.metastore:9083
     hive.s3.endpoint=http://minio-service.metastore:9000
@@ -86,6 +100,7 @@ additionalCatalogs:
     hive.s3.aws-access-key=minio
     hive.s3.aws-secret-key=minio123
     delta.enable-non-concurrent-writes=true
+
   rdbms: |-
     connector.name=postgresql
     connection-url=jdbc:postgresql://postgres-service.metastore:5432/hivemetastore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC
@@ -124,7 +139,8 @@ kubectl exec -it datapains-trino-cluster-coordinator-747bc6ccff-b6tx2 -n trino -
 trino> SHOW CATALOGS;
   Catalog
 -----------
- lakehouse
+ delta
+ iceberg
  system
  tpcds
  tpch
@@ -135,16 +151,34 @@ Splits: 20 total, 20 done (100.00%)
 2.57 [0 rows, 0B] [0 rows/s, 0B/s]
 ```
 
+### Delta
+
 ```bash
-trino> CREATE SCHEMA lakehouse.bronze;
+trino> CREATE SCHEMA delta.bronze;
 ```
 
 ```bash
-trino> CREATE TABLE lakehouse.bronze.products ( name VARCHAR, price DOUBLE, product_no BIGINT, ingest_date DATE, created TIMESTAMP WITH TIME ZONE);
+trino> CREATE TABLE delta.bronze.products ( name VARCHAR, price DOUBLE, product_no BIGINT, ingest_date DATE, created TIMESTAMP WITH TIME ZONE);
 ```
 
 ```bash
-trino> SELECT * FROM lakehouse.bronze.products;
-INSERT INTO lakehouse.bronze.products VALUES (CAST('Apple' AS VARCHAR), CAST(889.0 AS DOUBLE), CAST(1654523786273 AS BIGINT), CURRENT_DATE, CURRENT_TIMESTAMP);
-trino> SELECT * FROM lakehouse.bronze.products;
+trino> SELECT * FROM delta.bronze.products;
+trino> INSERT INTO delta.bronze.products VALUES (CAST('Apple' AS VARCHAR), CAST(889.0 AS DOUBLE), CAST(1654523786273 AS BIGINT), CURRENT_DATE, CURRENT_TIMESTAMP);
+trino> SELECT * FROM delta.bronze.products;
+```
+
+### Iceberg
+
+```bash
+trino> CREATE SCHEMA iceberg.bronze;
+```
+
+```bash
+trino> CREATE TABLE iceberg.bronze.products ( name VARCHAR, price DOUBLE, product_no BIGINT, ingest_date DATE, created TIMESTAMP WITH TIME ZONE);
+```
+
+```bash
+trino> SELECT * FROM iceberg.bronze.products;
+trino> INSERT INTO iceberg.bronze.products VALUES (CAST('Apple' AS VARCHAR), CAST(889.0 AS DOUBLE), CAST(1654523786273 AS BIGINT), CURRENT_DATE, CURRENT_TIMESTAMP);
+trino> SELECT * FROM iceberg.bronze.products;
 ```
