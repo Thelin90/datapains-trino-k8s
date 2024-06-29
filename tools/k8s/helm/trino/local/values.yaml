@@ -203,7 +203,16 @@ additionalExchangeManagerProperties: {}
 eventListenerProperties: {}
 
 additionalCatalogs:
-  lakehouse: |-
+  iceberg: |-
+    connector.name=iceberg
+    hive.metastore.uri=thrift://hive-service.metastore:9083
+    hive.s3.endpoint=http://minio-service.metastore:9000
+    hive.s3.path-style-access=true
+    hive.s3.aws-access-key=minio
+    hive.s3.aws-secret-key=minio123
+    iceberg.file-format=parquet
+
+  delta: |-
     connector.name=delta_lake
     hive.metastore.uri=thrift://hive-service.metastore:9083
     hive.s3.endpoint=http://minio-service.metastore:9000
@@ -211,6 +220,7 @@ additionalCatalogs:
     hive.s3.aws-access-key=minio
     hive.s3.aws-secret-key=minio123
     delta.enable-non-concurrent-writes=true
+
   rdbms: |-
     connector.name=postgresql
     connection-url=jdbc:postgresql://postgres-service.metastore:5432/hivemetastore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC
