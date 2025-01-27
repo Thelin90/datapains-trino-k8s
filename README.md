@@ -1,6 +1,8 @@
 # DataPains Trino Kubernetes
 
-[Medium Article For Reference](https://medium.com/@simon.thelin90/trino-minio-metastore-workshop-kubernetes-dbede7b1eca1)<
+[Medium Article For Reference](https://medium.com/@simon.thelin90/trino-minio-metastore-workshop-kubernetes-dbede7b1eca1)
+
+[YouTube Guide Video](https://www.youtube.com/watch?v=nlz43VESHEs)
 
 # NOTE
 
