@@ -77,12 +77,22 @@ NAME       	CHART VERSION	APP VERSION	DESCRIPTION
 trino/trino	0.21.0       	448        	Fast distributed SQL query engine for big data ...
 ```
 
+To get latest chart versions
+```bash
+helm repo update 
+```
+
+```bash
+NAME               	CHART VERSION	APP VERSION	DESCRIPTION
+trino/trino        	1.36.0       	468        	Fast distributed SQL query engine for big data ...
+```
+
 #### values.yaml
 
 We use default values for the deployment, but please note section:
 
 ```yaml
-additionalCatalogs:
+catalogs:
   iceberg: |-
     connector.name=iceberg
     hive.metastore.uri=thrift://hive-service.metastore:9083

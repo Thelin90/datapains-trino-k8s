@@ -6,6 +6,7 @@ export ENV := local
 export NAMESPACE := metastore
 export DOCKER_BUILD := build
 export LOCAL_TRINO_VALUES := tools/k8s/helm/trino/local
+export VALUES_FILE := latest_values.yaml
 
 .PHONY: build-image
 build-image:
@@ -30,7 +31,7 @@ log-pod:
 .PHONY: deploy-local-trino
 deploy-local-trino:
 	kubectl create namespace $(NAMESPACE) || true
-	helm install -f $(LOCAL_TRINO_VALUES)/values.yaml datapains-trino-cluster trino/trino --namespace $(NAMESPACE)
+	helm install -f $(LOCAL_TRINO_VALUES)/$(VALUES_FILE) datapains-trino-cluster trino/trino --namespace $(NAMESPACE)
 
 .PHONY: delete-local-trino
 delete-local-trino:
